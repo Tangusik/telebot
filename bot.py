@@ -4,34 +4,39 @@ from telebot import types
 
 bot = telebot.TeleBot(TOKEN)
 
+
+letters= ["А","Б","В","Г","Д","Е","Ё","Ж","З","К","Л","М","Н","О","П","Р","С","Т","У","Ф","Х","Ц","Ч","Ш","Щ","Э","Ю","Я"]
+letter_btns=[types.InlineKeyboardButton(text=letter, callback_data=letter) for letter in letters]
+
+letter_markup = types.InlineKeyboardMarkup()
+letter_markup.row(letter_btns[0], letter_btns[1], letter_btns[2],  letter_btns[3], letter_btns[4])
+letter_markup.row(letter_btns[5], letter_btns[6], letter_btns[7],  letter_btns[8], letter_btns[9])
+letter_markup.row(letter_btns[10], letter_btns[11], letter_btns[12],  letter_btns[13], letter_btns[14])
+letter_markup.row(letter_btns[15], letter_btns[15], letter_btns[17],  letter_btns[18], letter_btns[19])
+letter_markup.row(letter_btns[20], letter_btns[21], letter_btns[22],  letter_btns[23], letter_btns[24])
+letter_markup.row(letter_btns[25], letter_btns[26], letter_btns[27])
+
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
-
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("👋 Поздороваться")
+    btn1 = types.KeyboardButton("Хочу найти работу")
     markup.add(btn1)
     bot.send_message(message.from_user.id, "👋 Привет! Я твой <s>ЦАРЬ И БОГ</s> бот-помошник в поиске работы). ", reply_markup=markup, parse_mode="HTML")
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
 
-    if message.text == '👋 Поздороваться':
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True) #создание новых кнопок
-        btn1 = types.KeyboardButton('Как стать автором на Хабре?')
-        btn2 = types.KeyboardButton('Правила сайта')
-        btn3 = types.KeyboardButton('Советы по оформлению публикации')
-        markup.add(btn1, btn2, btn3)
-        bot.send_message(message.from_user.id, '❓ Задайте интересующий вас вопрос', reply_markup=markup) #ответ бота
+    if message.text == 'Хочу найти работу':
+        markup = letter_markup
+
+        bot.send_message(message.from_user.id, 'Выберите первую букву своего города', reply_markup=markup) 
 
 
-    elif message.text == 'Как стать автором на Хабре?':
-        bot.send_message(message.from_user.id, 'Вы пишете первый пост, его проверяют модераторы, и, если всё хорошо, отправляют в основную ленту Хабра, где он набирает просмотры, комментарии и рейтинг. В дальнейшем премодерация уже не понадобится. Если с постом что-то не так, вас попросят его доработать.\n \nПолный текст можно прочитать по ' + '[ссылке](https://habr.com/ru/sandbox/start/)', parse_mode='Markdown')
+@bot.callback_query_handler(func=lambda callback: True)
+def callback_message(callback):
+    if callback.data in letters:
+        bot.send_message(callback.message.chat.id, f"Ты ищешь город на букву {callback.data}")
 
-    elif message.text == 'Правила сайта':
-        bot.send_message(message.from_user.id, 'Прочитать правила сайта вы можете по ' + '[ссылке](https://habr.com/ru/docs/help/rules/)', parse_mode='Markdown')
-
-    elif message.text == 'Советы по оформлению публикации':
-        bot.send_message(message.from_user.id, 'Подробно про советы по оформлению публикаций прочитать по ' + '[ссылке](https://habr.com/ru/docs/companies/design/)', parse_mode='Markdown')
-
-
-bot.polling(none_stop=True, interval=0) #обязательная для работы бота часть
+bot.polling(none_stop=True, interval=0)
