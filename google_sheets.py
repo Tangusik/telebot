@@ -1,4 +1,3 @@
-from all_tokens import GOOGLE_TOKEN
 
 import os.path
 
@@ -62,8 +61,6 @@ def add_requests(rows):
   sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=WRITE_RANGE, valueInputOption="RAW", body=body).execute()
 
 
-rows = []
-for i in range(20):
-  rows.append(["+7(012)-312-31 23", fake.name(), str(random.randint(1,30))])
+
 
 print(read_table())
